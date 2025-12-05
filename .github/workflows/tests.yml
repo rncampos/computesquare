@@ -1,0 +1,38 @@
+# nome dado ao workflow de integração contínua
+name: CI - ComputeSquare
+
+# Triggers: push ou pull_request para master, ou manual
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+#Define um job chamado test que será executado em Ubuntu.
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repository, ou seja, clona o repositório no runner da GitHub Actions.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Set up Python, Instala Python 3.10 no runner.
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      # Install dependencies, Atualiza o pip; Instala o package local (-e .); Instala o pytest para executar os testes
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pytest
+
+      # Run tests, roda todos os testes na pasta tests/ com saída detalhada (-v).
+      - name: Run tests
+        run: python -m pytest -v tests/
